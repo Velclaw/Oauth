@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "An",
+      "lastName": "Nguyễn",
+      "email": "an@example.com",
+      "password": "12345678"
+    },
+    {
+      "id": 2,
+      "firstName": "Bình",
+      "lastName": "Trần",
+      "email": "binh@example.com",
+      "password": "matkhau123"
+    },
+    {
+      "id": 3,
+      "firstName": "Chi",
+      "lastName": "Lê",
+      "email": "chi@velclaw.dev",
+      "password": "velclaw2024"
+    }
+  ]
+}
