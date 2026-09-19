@@ -1,0 +1,24 @@
+{
+  "name": "@velclaw/oauth",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Velclaw OAuth gateway and authentication surface.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.3.3",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
+    "lucide-react": "0.544.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.30",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}
