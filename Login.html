@@ -13,13 +13,13 @@
 <div class="brand"><div class="mark">V</div><div><strong>VELCLAW</strong><small>IDENTITY</small></div></div>
 <div class="copy"><div class="eyebrow">VELCLAW WORKSPACE</div><h1>Chào mừng trở lại</h1><p>Đăng nhập để tiếp tục vào workspace AI-native của Velclaw.</p></div>
 <div class="providers">
-<button class="oauth" type="button" onclick="location.href='https://velclaw.cfd/api/auth/signin/github'"><span class="icon">◉</span><span class="label">Tiếp tục với GitHub</span><span class="status">PRODUCTION</span></button>
+<button class="oauth" type="button" disabled><span class="icon">◉</span><span class="label">Tiếp tục với GitHub</span><span class="status">CHƯA XÁC MINH</span></button>
 <button class="oauth" type="button" disabled><span class="icon">G</span><span class="label">Tiếp tục với Google</span><span class="status">SẮP CÓ</span></button>
 <button class="oauth" type="button" disabled><span class="icon">✦</span><span class="label">Tiếp tục với ChatGPT</span><span class="status">SẮP CÓ</span></button>
 </div>
 <div class="divider">HOẶC</div>
-<form class="email" onsubmit="event.preventDefault();document.getElementById('note').textContent='Đăng nhập email sẽ được bật cùng backend account system.'"><input type="email" placeholder="Địa chỉ email" autocomplete="email" required><button class="submit" type="submit">Đăng nhập</button></form>
-<div id="note" class="note">GitHub là phương thức đăng nhập production hiện được nối với backend. Google và ChatGPT chỉ bật sau khi callback OAuth được cấu hình.</div>
+<form class="email" onsubmit="event.preventDefault();document.getElementById('note').textContent='Đăng nhập email chưa khả dụng vì backend account system chưa được xác minh.'"><input type="email" placeholder="Địa chỉ email" autocomplete="email" required><button class="submit" type="submit">Đăng nhập</button></form>
+<div id="note" class="note" role="status">Đăng nhập đang bị vô hiệu hóa cho đến khi OAuth backend, HTTPS callback và thông tin cấu hình được xác minh. Không nhập mật khẩu vào trang này.</div>
 <div class="footer">CODE · AGENTS · BUILDS · RUNTIME · REVIEW · DEPLOY</div>
 </section><div class="footer">Velclaw · <a href="https://velclaw.cfd">velclaw.cfd</a></div></main>
 </body>
