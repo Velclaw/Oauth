@@ -1,44 +1,53 @@
 # Velclaw OAuth integration
 
-## Flow
+## Intended flow
 
-Velclaw Workspace -> Velclaw/Oauth -> Identity Provider -> Velclaw/Oauth -> Workspace session
+Velclaw Workspace -> Velclaw OAuth authorization server -> Identity Provider -> validated OAuth callback -> Workspace session.
 
-## Contracts
+## Current implementation boundary
 
-- Authorization entry: `/api/oauth/authorize`
-- Callback: `/oauth/callback`
-- Provider credentials are server-side only.
-- The client must never receive a provider client secret or private key.
-- The workspace passes an explicit `return_to` destination and the OAuth service validates it against an allow-list.
-- A production OAuth base URL must not be configured until its DNS, HTTPS certificate, HTTP response, and deployment target have been verified.
+The current repository contains a Next.js sign-in interface but does not contain an `app/api` authorization route or provider callback handler. The UI alone does not implement OAuth. Do not describe sign-in as production-ready until a backend is deployed and end-to-end tests pass.
 
-## Environment
+The UI's optional `NEXT_PUBLIC_OAUTH_AUTHORIZE_URL` must point to a verified HTTPS authorization endpoint. It is a public URL, never a secret.
+
+## Required server-side contracts
+
+- Authorization entry: `/api/oauth/authorize` (only if implemented by the deployed backend).
+- Callback path: register the exact path implemented by the deployed backend; do not assume a path before deployment.
+- Validate `redirect_uri` against an exact server-side allow-list.
+- Use cryptographically random `state` and validate it on callback.
+- Use PKCE (S256) for authorization-code flows.
+- Validate provider issuer, audience/client ID, redirect URI, and callback errors.
+- Exchange authorization codes only on the server.
+- Store client secrets and session-signing keys only in server-side environment variables.
+- Issue secure, HttpOnly, SameSite cookies with appropriate expiry and rotation/revocation behavior.
+- Never accept a client-supplied user identity or return destination without server-side validation.
+
+## Environment placeholders
 
 ```env
-# Set only after a real OAuth deployment has been verified.
+# Configure only in the hosting provider after a deployment is verified.
 OAUTH_BASE_URL=
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
 SESSION_SECRET=
 ALLOWED_REDIRECT_ORIGINS=
+
+# Public URL used by the UI, if the UI is deployed separately.
+NEXT_PUBLIC_OAUTH_AUTHORIZE_URL=
 ```
 
-Empty values are placeholders only. Never commit secrets.
+Empty values are placeholders. Never commit real values or ask users to paste secrets into chat.
 
-## Workspace link
+## Deployment and release gate
 
-The main Velclaw application is the client surface. OAuth is a separate identity boundary so provider credentials and session handling are isolated from the workspace UI.
+1. Choose the actual hosting target and deploy the authorization backend.
+2. Verify DNS, HTTPS certificate, and a health endpoint on that target.
+3. Implement and test authorize, callback, state, PKCE, code exchange, session issuance, logout, and error paths.
+4. Set server-side secrets and an exact redirect-origin allow-list in hosting settings.
+5. Register the exact callback URL with the identity provider.
+6. Configure the UI's public authorization endpoint to the verified URL.
+7. Run end-to-end tests for valid login, denied redirect, mismatched state, invalid callback, and expired/revoked session.
+8. Only then enable sign-in buttons and call the service production-ready.
 
-## Deployment gate
-
-Before registering any OAuth callback with an identity provider:
-
-1. Deploy the OAuth service.
-2. Verify DNS A/AAAA/CNAME records.
-3. Verify HTTPS and certificate validity.
-4. Verify the live HTTP response.
-5. Set `OAUTH_BASE_URL` to that verified hostname.
-6. Set `ALLOWED_REDIRECT_ORIGINS` to the verified workspace origin.
-7. Register the exact callback URL with the provider.
-8. Run an end-to-end login test.
+No production hostname or credentials are assigned by this repository change.
