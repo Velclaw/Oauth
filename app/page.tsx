@@ -5,14 +5,46 @@ import { ArrowRight, Github, KeyRound, LockKeyhole, ShieldCheck, Sparkles } from
 
 const workspaceUrl = 'https://velclaw.cfd'
 
+/**
+ * Accept only return destinations on the configured workspace origin.
+ * The OAuth service must independently enforce its own redirect allow-list;
+ * client-side validation is defense in depth, not an authorization boundary.
+ */
+function safeReturnTo(candidate: string | null): string {
+  if (!candidate) return workspaceUrl
+
+  try {
+    const target = new URL(candidate, workspaceUrl)
+    const workspace = new URL(workspaceUrl)
+
+    if (
+      target.protocol !== 'https:' ||
+      target.origin !== workspace.origin ||
+      target.username ||
+      target.password
+    ) {
+      return workspaceUrl
+    }
+
+    return target.toString()
+  } catch {
+    return workspaceUrl
+  }
+}
+
 export default function OAuthPage() {
   const [loading, setLoading] = useState<string | null>(null)
 
   function begin(provider: string) {
     setLoading(provider)
-    const returnTo = new URLSearchParams(window.location.search).get('return_to') || workspaceUrl
-    const target = workspaceUrl + '/api/oauth/authorize?provider=' + encodeURIComponent(provider) + '&redirect_uri=' + encodeURIComponent(returnTo)
-    window.location.assign(target)
+
+    const query = new URLSearchParams(window.location.search)
+    const returnTo = safeReturnTo(query.get('return_to'))
+    const target = new URL('/api/oauth/authorize', workspaceUrl)
+    target.searchParams.set('provider', provider)
+    target.searchParams.set('redirect_uri', returnTo)
+
+    window.location.assign(target.toString())
   }
 
   return (
