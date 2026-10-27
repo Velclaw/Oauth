@@ -1,13 +1,29 @@
-# Oauth
+# Velclaw OAuth
 
-Velclaw OAuth identity boundary.
+Velclaw OAuth is the intended identity boundary for the Velclaw workspace.
+
+## Current implementation status
+
+- The Next.js application currently provides a sign-in interface.
+- This repository does not currently contain an OAuth authorization API route or provider callback handler.
+- No production OAuth base URL is confirmed in this repository.
+- GitHub/email sign-in must remain disabled until a real backend endpoint, provider credentials, redirect allow-list, and session implementation are deployed and verified.
+- The legacy `Login.html` page is a static interface, not an authentication service.
 
 ## Workspace integration
 
-The OAuth surface is the identity boundary for the main workspace:
+Intended flow:
 
-Velclaw/VELCLAW -> Velclaw/Oauth -> Identity Provider -> Velclaw/Oauth -> Velclaw/VELCLAW
+`Velclaw workspace -> OAuth authorization server -> identity provider -> validated callback -> workspace session`
 
-> Production OAuth hostname is intentionally **not assigned yet**. DNS and HTTPS must be verified before this repository is given a public callback hostname.
+See [integration.md](docs/integration.md) for the deployment gate and required security controls.
 
-See [integration.md](docs/integration.md) for the contract and environment configuration.
+## Local checks
+
+```sh
+npm install
+npm run type-check
+npm run build
+```
+
+Do not commit secrets, real user passwords, or provider credentials.
